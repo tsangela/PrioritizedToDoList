@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="@string/to_do"
+            android:text="@string/title"
             android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:fontFamily="sans-serif-condensed" />
