@@ -1,9 +1,7 @@
 package io.github.tsangela.prioritizedto_dolist;
 
-import android.annotation.TargetApi;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,21 +13,26 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.graphics.Color;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private int priorityLevel;
+    private boolean cardVisible;
+    private CardView warningCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         priorityLevel = 1;
+        cardVisible = false;
+        warningCard = findViewById(R.id.warning_card);
+
     }
 
     public void changePriority(View view) {
         // Retrieve priority level
-        Button button = (Button) findViewById(R.id.priority_lvl_button);
+        Button button = findViewById(R.id.priority_lvl_button);
         String level = button.getText().toString();
 
         switch (level) {
@@ -64,36 +67,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void add(View view) {
         // Retrieve input
-        EditText input = (EditText) findViewById(R.id.text_input);
-        final String text = input.getText().toString().trim();
+        EditText input = findViewById(R.id.text_input);
+        String text = input.getText().toString().trim();
 
-
-        if (text.isEmpty()) {
-            TextView errorMsg = new TextView(this);
-            errorMsg.setText("Text input is empty.");
-            errorMsg.setPadding(10,10,10,10);
-            errorMsg.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            final CardView card = new CardView(this);
-            card.setPadding(10,10,10,10);
-            card.setCardBackgroundColor(Color.LTGRAY);
-            card.setCardElevation(1);
-            card.setRadius(10);
-            card.addView(errorMsg);
-
-            LinearLayout list = (LinearLayout) findViewById(R.id.list);
-            list.addView(card);
+        if (text.isEmpty() && !cardVisible) {
+            input.setText("");
+            warningCard.setVisibility(View.VISIBLE);
+            cardVisible = true;
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    card.setVisibility(View.GONE);
+                    warningCard.setVisibility(View.GONE);
                 }
-            }, 2000);
+            }, 1500);
 
+            cardVisible = false;
         } else {
             // New to-do item
             final CheckBox listItem = new CheckBox(this);
@@ -124,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             // Add to to-do list
-            LinearLayout list = (LinearLayout) findViewById(R.id.list);
+            LinearLayout list = findViewById(R.id.list);
             list.addView(listItem);
 
             // Clear input text box
